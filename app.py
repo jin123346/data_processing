@@ -6,6 +6,8 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from preprocessors import convert_to_gbif, convert_to_naver, convert_to_bioone
 
+NAVER_OPTION = "네이버백과사전으로 변환"
+
 # 페이지 설정
 st.set_page_config(
     page_title="데이터 전처리 시스템",
@@ -60,7 +62,7 @@ if st.session_state.uploaded_file is not None:
         
         preprocessing_option = st.radio(
             "변환할 형식을 선택하세요:",
-            ["GBIF로 변환", "네이버백과사전으로 변환", "바이오원으로 변환"],
+            ["GBIF로 변환", NAVER_OPTION, "바이오원으로 변환"],
             horizontal=True
         )
         
@@ -70,7 +72,7 @@ if st.session_state.uploaded_file is not None:
                 try:
                     if preprocessing_option == "GBIF로 변환":
                         processed_df = convert_to_gbif(df.copy())
-                    elif preprocessing_option == "네이버백과사전으로 변환":
+                    elif preprocessing_option == NAVER_OPTION:
                         processed_df = convert_to_naver(df.copy())
                     elif preprocessing_option == "바이오원으로 변환":
                         processed_df = convert_to_bioone(df.copy())
@@ -117,7 +119,7 @@ if st.session_state.uploaded_file is not None:
                     
                     # 네이버 백과사전 변환의 경우 컬럼명을 올바르게 설정
                     current_option = st.session_state.preprocessing_option or preprocessing_option
-                    if current_option == "네이버백과사전으로 변환":
+                    if current_option == NAVER_OPTION and {'개체명(국2)_1', '개체명(국2)_2'}.issubset(set(st.session_state.processed_data.columns)):
                         # openpyxl을 사용하여 같은 이름의 컬럼을 처리
                         wb = Workbook()
                         ws = wb.active
