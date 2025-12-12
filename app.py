@@ -6,6 +6,11 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from preprocessors import convert_to_gbif, convert_to_naver, convert_to_bioone
 
+
+
+
+
+
 # 페이지 설정
 st.set_page_config(
     page_title="데이터 전처리 시스템",
@@ -119,38 +124,8 @@ if st.session_state.uploaded_file is not None:
                     current_option = st.session_state.preprocessing_option or preprocessing_option
                     if current_option == "네이버백과사전으로 변환":
                         # openpyxl을 사용하여 같은 이름의 컬럼을 처리
-                        wb = Workbook()
-                        ws = wb.active
-                        
-                        # 컬럼명 설정 (개체명(국2)를 두 번, 빈 컬럼 처리)
-                        column_names = [
-                            '신고일자',
-                            '개체명(국2)',
-                            '개체명(국2)',  # 같은 이름
-                            '개체명',
-                            '구분',
-                            '지',
-                            '회사',
-                            '',  # 빈 컬럼
-                            '크기',
-                            '색과 무늬',
-                            '주요 특징',
-                            '서식지',
-                            '먹이 습성',
-                            '행동 습성',
-                            '국내 분포',
-                            '국외 분포',
-                            '전체 정보'
-                        ]
-                        
-                        # 헤더 작성
-                        ws.append(column_names)
-                        
-                        # 데이터 작성
-                        for r in dataframe_to_rows(st.session_state.processed_data, index=False, header=False):
-                            ws.append(r)
-                        
-                        wb.save(full_path)
+                        st.session_state.processed_data.to_excel(full_path, index=False, engine='openpyxl')
+
                     else:
                         # 다른 변환 형식은 일반적인 방법 사용
                         st.session_state.processed_data.to_excel(full_path, index=False, engine='openpyxl')
